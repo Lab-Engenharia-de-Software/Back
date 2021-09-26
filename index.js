@@ -1,17 +1,23 @@
-const { PrismaClient } = require('@prisma/client')
+//const { PrismaClient } = require('@prisma/client')
+//const prisma = new PrismaClient();
+const express = require('express')
+const app = express()
 
-const prisma = new PrismaClient();
+var administrador = require('./routes/administrador') //var para uso do endpoint
 
-async function main() {
-  const user = await prisma.user.findFirst()
-  console.log(user)
-    
-  }
-  
-  main()
-    .catch((e) => {
-      throw e
-    })
-    .finally(async () => {
-      await prisma.$disconnect()
-    })
+app.use(express.json()) //create server
+
+//route endpoints
+app.use('/administrador',administrador)
+
+app.get('/home', async (req, res) => {
+  res.json({"message":"test da home"})
+  console.log('sim')
+})
+
+app.listen(3333,() => {
+  console.log('porta 3333 on')
+})
+console.log('XD')
+
+module.exports = app

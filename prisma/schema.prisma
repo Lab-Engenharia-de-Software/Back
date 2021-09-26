@@ -8,8 +8,13 @@ generator client {
 }
 
 //EXEMPLOS PRA TESTAR O BAGULHO (TEM Q VER SE ISSO APARECE NA TABLEA DO BANCO QUANDO INICIAR O CLIENT)
-model User {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  name    String?
+model adm {
+  id       Int      @id @default(autoincrement())
+  email    String   @unique @db.VarChar(255)
+  senha    String   @db.VarChar(255)
+  nome     String   @db.VarChar(255)
+  cpf      String   @unique @db.VarChar(255)
+  telefone String   @db.VarChar(255)
+  endereco String   @db.VarChar(255)
+  role     String   @db.VarChar(255)
 }

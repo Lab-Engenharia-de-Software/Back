@@ -4,6 +4,12 @@
   "description": "Back-end ",
   "main": "index.js",
   "scripts": {
+    "start": "node ./index.js",
+    "start-dev": "npx nodemon ./index.js",
+    "dbmigrate": "npx prisma migrate dev",
+    "dbreset": "npx prisma migrate reset",
+    "dbdeploy": "npx prisma migrate deploy",
+
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -22,7 +28,8 @@
     "express": "^4.17.1"
   },
   "devDependencies": {
-    "prisma": "^3.0.2"
+    "prisma": "^3.0.2",
+    "nodemon": "^2.0.7"
   },
   "keywords": []
 }
