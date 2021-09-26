@@ -17,4 +17,5 @@ model adm {
   telefone String   @db.VarChar(255)
   endereco String   @db.VarChar(255)
   role     String   @db.VarChar(255)
+  status   String   @db.VarChar(255)
 }

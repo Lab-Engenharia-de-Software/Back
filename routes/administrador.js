@@ -12,7 +12,9 @@ route.post('/', async (req, res) => {
             nome: req.body.nome,
             cpf: req.body.cpf,
             telefone: req.body.telefone,
-            endereco: req.body.endereco
+            endereco: req.body.endereco,
+            status: "administrador",
+            role: "adm"
 
         }
     })
