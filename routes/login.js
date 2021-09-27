@@ -35,12 +35,22 @@ route.post('/', async (req, res) => {
         } */}
         console.log(accessADM)
 
-        res.json({
-            "message": `login ${accessADM.email}, ${accessADM.status}`
-        })
-        if(!accessADM) return res.json({ "error": "deu ruim"})
+        if ( accessADM == null && accessSecretaria == null && accessPesquisador == null){
+            res.json({
+                "message": "Dados inválidos!",
+                "erro": "1"
+            })
+            
+        } else{
+            res.json({
+                "message": `login ${accessADM.email}, ${accessADM.status}`
+            })
+        }
 
-    }catch(e){
+    }catch(e){ 
+        res.json({
+            "message": "erro"
+        })
 
     }
     
