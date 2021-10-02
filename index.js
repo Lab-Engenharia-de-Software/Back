@@ -14,7 +14,7 @@ app.use('/administrador',administrador);
 app.use('/login', login);
 
 app.get('/home', async (req, res) => {
-  res.json({"message":"test da home com heroku"})
+  res.json({"message":"test da home com heroku "})
   console.log('sim'); 
 })
 
