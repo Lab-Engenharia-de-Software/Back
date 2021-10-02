@@ -2,12 +2,14 @@
 //const prisma = new PrismaClient();
 const express = require('express');
 const app = express();
+const cors = require('cors')
 
 var administrador = require('./routes/administrador'); //var para uso do endpoint
 var login = require('./routes/login');
 const port = process.env.PORT || 3333;
 
 app.use(express.json()); //create server
+app.use(cors())
 
 //route endpoints
 app.use('/administrador',administrador);
