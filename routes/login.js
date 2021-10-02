@@ -6,6 +6,7 @@ var route = express.Router()
 
 route.post('/', async (req, res) => {
     try{
+        console.log("body endiado ",req.body)
         //caso seja adm
         let accessPesquisador = null
         let accessSecretaria = null 
@@ -15,7 +16,7 @@ route.post('/', async (req, res) => {
                     equals: req.body.email
                 },
                 senha: {
-                    equals: req.body.email
+                    equals: req.body.senha
                 }
             }
         })
@@ -35,7 +36,7 @@ route.post('/', async (req, res) => {
         } */}
         console.log(accessADM)
 
-        if ( accessADM == null && accessSecretaria == null && accessPesquisador == null){
+        if ( accessADM == null || accessADM.id == "1"){
             res.json({
                 "message": "Dados inválidos!",
                 "erro": "1"
@@ -43,11 +44,17 @@ route.post('/', async (req, res) => {
             
         } else{
             res.json({
-                "message": `login ${accessADM.email}, ${accessADM.status}`
+                "matricula":`${accessADM.id}`,
+                "nome": `${accessADM.nome}`,
+                "email": `${accessADM.email}`,
+                "cpf":`${accessADM.cpf}`,
+                "cargo":`${accessADM.role}`,
+                "status":`${accessADM.status}`
             })
         }
 
     }catch(e){ 
+        console.log(e)
         res.json({
             "message": "erro"
         })
