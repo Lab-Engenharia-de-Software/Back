@@ -24,3 +24,5 @@ route.post('/Cadastro', async (req, res) => {
     })
     res.json({"message": `Cadatrado o pesquisador ${pesquisador.nome}, com id ${pesquisador.id}`})
 })
+
+module.exports = route
