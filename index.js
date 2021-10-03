@@ -14,6 +14,7 @@ app.use(cors())
 //route endpoints
 app.use('/administrador',administrador);
 app.use('/login', login);
+app.use('/Pesquisador', pesquisadores)
 
 app.get('/home', async (req, res) => {
   res.json({"message":"test da home com heroku "})
