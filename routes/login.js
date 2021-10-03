@@ -82,8 +82,7 @@ route.post('/', async (req, res) => {
                 "nome": `${accessSecretaria.nome}`,
                 "email": `${accessSecretaria.email}`,
                 "cpf":`${accessSecretaria.cpf}`,
-                "cargo":`${accessSecretaria.role}`,
-                "status":`${accessSecretaria.status}`
+                "cargo":`${accessSecretaria.role}`
             })
         }
     }catch(e){ 
