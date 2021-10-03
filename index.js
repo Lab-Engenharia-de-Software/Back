@@ -5,6 +5,8 @@ const app = express();
 const cors = require('cors')
 
 var administrador = require('./routes/administrador'); //var para uso do endpoint
+var pesquisador = require('./routes/pesquisador')
+var secretaria = require('./routes/secretaria')
 var login = require('./routes/login');
 const port = process.env.PORT || 3333;
 
@@ -14,7 +16,7 @@ app.use(cors())
 //route endpoints
 app.use('/administrador',administrador);
 app.use('/login', login);
-app.use('/Pesquisador', pesquisadores)
+app.use('/Pesquisador', pesquisador)
 app.use('/Secretaria', secretaria);
 
 app.get('/home', async (req, res) => {
