@@ -6,7 +6,7 @@ var route = express.Router()
 
 route.post('/', async (req, res) => {
     try{
-        console.log("body endiado ",req.body)
+        console.log("request",req.body)
         //caso seja adm
         let accessADM = await prisma.adm.findFirst({
             where: {
@@ -50,12 +50,13 @@ route.post('/', async (req, res) => {
             accessSecretaria = {id:"1"}
         }
         //id 1 é pq n tem cadastro
+        
         if ( accessADM.id == "1" 
         & accessPesquisador.id == "1"
         & accessSecretaria.id == "1"){
             res.json({
                 "message": "Dados inválidos!",
-                "erro": "1"
+                "status": "0"
             })
             
         } else if (accessADM.id != "1"){
@@ -82,13 +83,15 @@ route.post('/', async (req, res) => {
                 "nome": `${accessSecretaria.nome}`,
                 "email": `${accessSecretaria.email}`,
                 "cpf":`${accessSecretaria.cpf}`,
-                "cargo":`${accessSecretaria.role}`
+                "cargo":`${accessSecretaria.role}`,
+                "status":"secretaria"
             })
         }
     }catch(e){ 
         console.log(e)
         res.json({
-            "message": "erro"
+            "message": "erro",
+            "status":"1"
         })
     }   
 })
