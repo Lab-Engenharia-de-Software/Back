@@ -93,7 +93,48 @@ route.get("/:id", async (req, res) => {
         console.log("deu ruim em get pesq", req.body)
         res.json({"message":"internal error","status":"1"})
     }
-    
 })
+route.patch("/:id", async (req, res) =>{
+    try {
+        //atualizar cargo para pesquisador
+        if (req.body.authorization == "secretaria" || req.body.authorization == "admin") {
+            if (req.params.id != "1" & req.body.value == "parecerista" ||  req.body.value == "pesquisador") {
+                let pesquisador = await prisma.pesquisadores.update({
+                    where: {
+                        id: parseInt(req.params.id)
+                    },
+                    data: {
+                        "status": req.body.value
+                    }
+                })
+                res.json({ "status": "2", "message": `Pesquisador ${pesquisador.nome} designado à ${req.body.value}.` })
+            
+            }else if(req.body.authorization == "secretaria" & req.body.value == "presidente"){
+                res.json({ "message":"Ação inválida, necessário acesso administrativo"})
+
+            }else if (req.params.id != "1" & req.body.value == "presidente" & req.authorization == "administrador") {
+                let pesquisador = await prisma.pesquisadores.update({
+                    where: {
+                        id: parseInt(req.params.id)
+                    },
+                    data: {
+                        "cargo": req.body.value
+                    }
+                })
+                res.json({ "status": "2", "message": `Pesquisador ${pesquisador.nome} designado à Presidente.` })
+            }
+        }else{
+            res.json({ "message":"acesso negado"})
+        }
+        
+    }catch(e){
+        console.log(e)
+        console.log("deu ruim em patch pesq", req.body)
+        res.json({"message":"internal error","status":"1"})
+    }
+
+})
+//alterar status ou cargo de um pesquisador
+
 
 module.exports = route
