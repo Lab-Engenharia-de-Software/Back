@@ -66,12 +66,12 @@ route.post('/Cadastro', async (req, res) => {
 //pegar informações de um pesquisador
 route.get("/:id", async (req, res) => {
     try{
-        if(req.params.id =! "1"){
-            let pesquisador = await prisma.pesquisadores.findFirst({ 
-                where: {
-                    id: parseInt(req.params.id)
-                }
-            })
+        let pesquisador = await prisma.pesquisadores.findFirst({ 
+            where: {
+                id: parseInt(req.params.id)
+            }
+        })
+        if(pesquisador.id =! "1"){ 
             res.json({
                     "cargo": pesquisador.cargo,
                     "status": pesquisador.status,
