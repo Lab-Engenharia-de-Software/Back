@@ -1,3 +1,4 @@
+const { PrismaClientValidationError } = require('@prisma/client/runtime')
 var express = require('express')
 const prisma = require('../utils/prismaDB')
 var route = express.Router()
@@ -59,6 +60,38 @@ route.post('/Cadastro', async (req, res) => {
     } finally{
         res.json({"message":"Ocorreu um erro",
                 "status":"0"})
+    }
+    
+})
+//pegar informações de um pesquisador
+route.get("/:id", async (req, res) => {
+    try{
+        if(req.params.id =! "1"){
+            let pesquisador = await prisma.pesquisadores.findFirst({ 
+                where: {
+                    id: parseInt(req.params.id)
+                }
+            })
+            res.json({
+                    "cargo": pesquisador.cargo,
+                    "status": pesquisador.status,
+                    "nome":pesquisador.nome,
+                    "cpf": pesquisador.cpf,
+                    "email": pesquisador.email,
+                    "telefone": pesquisador.telefone,
+                    "endereco":pesquisador.endereco,
+                    "sexo": pesquisador.sexo,
+                    "area": pesquisador.area,
+                    "message":"success"
+                })
+
+        }else{
+            res.json({"message":"dados inválidos","status":"0"})
+        }
+    }catch(e){
+        console.log(e)
+        console.log("deu ruim em get pesq", req.body)
+        res.json({"message":"internal error","status":"1"})
     }
     
 })
