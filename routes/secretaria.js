@@ -57,4 +57,33 @@ route.post('/Cadastro', async (req, res) => {
    
 })
 
+//dados de secretaria
+route.get("/:id", async (req, res) =>{
+    try{
+        let secretaria = await prisma.secretarias.findFirst({
+            where: {
+                id: parseInt(req.params.id)
+            }
+        })
+        if(secretaria == null){secretaria = {id:"1"}}
+        if (secretaria.id != "1"){
+            res.json({ 
+                email: req.body.email,
+                nome: req.body.nome,
+                cpf: req.body.cpf,
+                telefone: req.body.telefone,
+                endereco: req.body.endereco,
+                role: "secretaria"})
+
+        }else{
+            res.json({"message":"Usuário inválido","status":"0"})
+        }
+
+    }catch(e){
+        console.log(e)
+        console.log("deu ruim em get secretaria", req.body)
+        res.json({"message":"internal error","status":"1"})
+    }
+})
+
 module.exports = route
