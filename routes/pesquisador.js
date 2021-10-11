@@ -72,23 +72,41 @@ route.get("/:id", async (req, res) => {
             }
         })
         if(pesquisador == null){
-            pesquisador = {id:1}
+            pesquisador = {id:"1"}
         }
-        if(pesquisador.id != "1" ){ 
+        //sem login nao vê usuario e pesquisadores não veem perfil nao cadastrado
+        if(pesquisador.id != "1"  & pesquisador.status != "invalido" & req.body.authorization != undefined){ 
             res.json({
-                    "cargo": pesquisador.cargo,
-                    "status": pesquisador.status,
-                    "nome":pesquisador.nome,
-                    "cpf": pesquisador.cpf,
-                    "email": pesquisador.email,
-                    "telefone": pesquisador.telefone,
-                    "endereco":pesquisador.endereco,
-                    "sexo": pesquisador.sexo,
-                    "area": pesquisador.area,
-                    "message":"success"
-                })
-        }else{
-            res.json({"message":"Usuário inválido",
+                "cargo": pesquisador.cargo,
+                "status": pesquisador.status,
+                "nome":pesquisador.nome,
+                "cpf": pesquisador.cpf,
+                "email": pesquisador.email,
+                "telefone": pesquisador.telefone,
+                "endereco":pesquisador.endereco,
+                "sexo": pesquisador.sexo,
+                "area": pesquisador.area,
+                "message":"success"
+            })
+        
+        //apenas adm e secretaria/admin tem acesso a perfis sem cadastro
+        }else if(pesquisador.id != "1"  & pesquisador.status == "invalido" 
+        & req.body.authorization != "pesquisador"& req.body.authorization != "presidente" & req.body.authorization != undefined){
+            res.json({
+                "cargo": pesquisador.cargo,
+                "status": pesquisador.status,
+                "nome":pesquisador.nome,
+                "cpf": pesquisador.cpf,
+                "email": pesquisador.email,
+                "telefone": pesquisador.telefone,
+                "endereco":pesquisador.endereco,
+                "sexo": pesquisador.sexo,
+                "area": pesquisador.area,
+                "message":"success"
+            })
+        }
+        else{
+            res.json({"message":"Usuário ou acesso inválido",
                       "status":"0",
                     "id":req.params.id})
         }
@@ -99,7 +117,7 @@ route.get("/:id", async (req, res) => {
     }
 })
 
-//route para alterar informações de pesquisador, por enquanto apenas o cargo
+//route para alterar informações de pesquisador, por enquanto apenas o cargo e ativar a conta
 route.patch("/:id", async (req, res) =>{
     try {
         //atualizar status de pesquisador para parecerista ou inverso
