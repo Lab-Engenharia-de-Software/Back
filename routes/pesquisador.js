@@ -71,7 +71,10 @@ route.get("/:id", async (req, res) => {
                 id: parseInt(req.params.id)
             }
         })
-        if(pesquisador.id =! "1"){ 
+        if(pesquisador == null){
+            pesquisador = {id:1}
+        }
+        if(pesquisador.id != "1" ){ 
             res.json({
                     "cargo": pesquisador.cargo,
                     "status": pesquisador.status,
@@ -84,9 +87,10 @@ route.get("/:id", async (req, res) => {
                     "area": pesquisador.area,
                     "message":"success"
                 })
-
         }else{
-            res.json({"message":"dados inválidos","status":"0"})
+            res.json({"message":"Usuário inválido",
+                      "status":"0",
+                    "id":req.params.id})
         }
     }catch(e){
         console.log(e)
