@@ -94,9 +94,11 @@ route.get("/:id", async (req, res) => {
         res.json({"message":"internal error","status":"1"})
     }
 })
+
+//route para alterar informações de pesquisador, por enquanto apenas o cargo
 route.patch("/:id", async (req, res) =>{
     try {
-        //atualizar cargo para pesquisador
+        //atualizar status de pesquisador para parecerista ou inverso
         if (req.body.authorization == "secretaria" || req.body.authorization == "admin") {
             if (req.params.id != "1" & req.body.value == "parecerista" ||  req.body.value == "pesquisador") {
                 let pesquisador = await prisma.pesquisadores.update({
@@ -109,9 +111,11 @@ route.patch("/:id", async (req, res) =>{
                 })
                 res.json({ "status": "2", "message": `Pesquisador ${pesquisador.nome} designado à ${req.body.value}.` })
             
+            //por enquanto recusar alteração de secretaria para este cargo
             }else if(req.body.authorization == "secretaria" & req.body.value == "presidente"){
                 res.json({ "message":"Ação inválida, necessário acesso administrativo"})
-
+            
+            //atualizar cargo de pesquisador para presidente
             }else if (req.params.id != "1" & req.body.value == "presidente" & req.authorization == "administrador") {
                 let pesquisador = await prisma.pesquisadores.update({
                     where: {
@@ -134,7 +138,4 @@ route.patch("/:id", async (req, res) =>{
     }
 
 })
-//alterar status ou cargo de um pesquisador
-
-
 module.exports = route
