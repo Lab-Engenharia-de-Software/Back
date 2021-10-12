@@ -101,7 +101,6 @@ route.get("/Lista", async (req,res) =>{
                 telefone: true,
             }
         })
-
         res.json(
             {
             "secretarias":secretarias,
@@ -110,6 +109,40 @@ route.get("/Lista", async (req,res) =>{
     }catch(e){
         console.log(e)
         console.log("deu ruim em get secretaria list", req.body)
+        res.json({"message":"internal error","status":"1"})        
+    }
+})
+
+//atividades de secretaria (por enquanto, em seguida adicionar avaliação de protocolo )
+route.get("/Atividades", async (req,res) =>{
+    try{
+        let perfis = await prisma.pesquisadores.findMany({
+            where:{
+                role:"invalido",
+            },
+            select:{
+                id: true,
+                status: true,
+                role: true,
+                nome: true,
+                cpf: true,
+                email: true,
+                telefone: true,
+                area: true,
+                sexo:true
+            }
+        })
+        res.json(
+            {
+            "message":"Cadastro pendentes de validação",
+            "pesquisadores": perfis,
+            "status":"2"
+
+        })
+
+    }catch(e){
+        console.log(e)
+        console.log("deu ruim em get invalidPerf list", req.body)
         res.json({"message":"internal error","status":"1"})        
     }
 })
