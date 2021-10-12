@@ -65,6 +65,8 @@ route.post('/Cadastro', async (req, res) => {
 })
 //pegar informações de um pesquisador
 route.get("/user/:id", async (req, res) => {
+    console.log(req.params.id + " requested page")
+    console.log(req.headers.authorization)
     try{
         let pesquisador = await prisma.pesquisadores.findFirst({ 
             where: {
@@ -75,7 +77,7 @@ route.get("/user/:id", async (req, res) => {
             pesquisador = {id:"1"}
         }
         //sem login nao vê usuario e pesquisadores não veem perfil nao cadastrado
-        if(pesquisador.id != "1"  & pesquisador.status != "invalido" & req.body.authorization != undefined){ 
+        if(pesquisador.id != "1"  & pesquisador.status != "invalido" & req.headers.authorization != undefined){ 
             res.json({
                 "cargo": pesquisador.cargo,
                 "status": pesquisador.status,
@@ -91,7 +93,7 @@ route.get("/user/:id", async (req, res) => {
         
         //apenas adm e secretaria/admin tem acesso a perfis sem cadastro
         }else if(pesquisador.id != "1"  & pesquisador.status == "invalido" 
-        & req.body.authorization != "pesquisador"& req.body.authorization != "presidente" & req.body.authorization != undefined){
+        & req.headers.authorization != "pesquisador"& req.headers.authorization != "presidente" & req.headers.authorization != undefined){
             res.json({
                 "cargo": pesquisador.cargo,
                 "status": pesquisador.status,
@@ -171,7 +173,7 @@ route.get("/Lista", async (req,res) =>{
 route.patch("/:id", async (req, res) =>{
     try {
         //atualizar status de pesquisador para parecerista ou inverso
-        if (req.body.authorization == "secretaria" || req.body.authorization == "admin") {
+        if (req.headers.authorization == "secretaria" || req.headers.authorization == "admin") {
             if (req.params.id != "1" & req.body.value == "parecerista" || req.body.value == "pesquisador") {
                 let pesquisador = await prisma.pesquisadores.update({
                     where: {
@@ -184,7 +186,7 @@ route.patch("/:id", async (req, res) =>{
                 res.json({ "status": "2", "message": `Pesquisador ${pesquisador.nome} designado à ${req.body.value}.` })
             
             //por enquanto recusar alteração de secretaria para este cargo
-            }else if(req.body.authorization == "secretaria" & req.body.value == "presidente"){
+            }else if(req.headers.authorization == "secretaria" & req.body.value == "presidente"){
                 res.json({ "message":"Ação inválida, necessário acesso administrativo"})
             
             //atualizar cargo de pesquisador para presidente (apenas adm)

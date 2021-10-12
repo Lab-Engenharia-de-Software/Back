@@ -28,7 +28,7 @@ route.post('/Cadastro', async (req, res) => {
             validatePesquisador = {id:"1"}
         }
         console.log(validateAdm, validatePesquisador)
-        if(validateAdm.id == "1" & validatePesquisador.id =="1" & req.body.authorization == 'admin'){
+        if(validateAdm.id == "1" & validatePesquisador.id =="1" & req.headers.authorization == 'admin'){
             let secretaria = await prisma.secretarias.create({
                 data: {
                     email: req.body.email,
@@ -44,7 +44,7 @@ route.post('/Cadastro', async (req, res) => {
                       "status": "2"})
             
         }else{
-            res.json({"message": `Erro: ${req.body.authorization} não possui autorização para esta ação`,
+            res.json({"message": `Erro: ${req.headers.authorization} não possui autorização para esta ação`,
                         "status":"1"})
         }
     }catch(e){
