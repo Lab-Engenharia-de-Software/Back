@@ -41,7 +41,7 @@ route.post('/Cadastro', async (req, res) => {
                     sexo: req.body.sexo,
                     nascimento: req.body.nascimento,
                     area: req.body.area,
-                    status: "pesquisador", //isso pode ser alterado para parecerista ou presidente (futuramente)
+                    status: "invalido",
                     role: "pesquisador"
     
                 }
@@ -122,7 +122,7 @@ route.patch("/:id", async (req, res) =>{
     try {
         //atualizar status de pesquisador para parecerista ou inverso
         if (req.body.authorization == "secretaria" || req.body.authorization == "admin") {
-            if (req.params.id != "1" & req.body.value == "parecerista" ||  req.body.value == "pesquisador") {
+            if (req.params.id != "1" & req.body.value == "parecerista" || req.body.value == "pesquisador") {
                 let pesquisador = await prisma.pesquisadores.update({
                     where: {
                         id: parseInt(req.params.id)
@@ -137,8 +137,8 @@ route.patch("/:id", async (req, res) =>{
             }else if(req.body.authorization == "secretaria" & req.body.value == "presidente"){
                 res.json({ "message":"Ação inválida, necessário acesso administrativo"})
             
-            //atualizar cargo de pesquisador para presidente
-            }else if (req.params.id != "1" & req.body.value == "presidente" & req.authorization == "administrador") {
+            //atualizar cargo de pesquisador para presidente (apenas adm)
+            }else if (req.params.id != "1" & req.body.value == "presidente") {
                 let pesquisador = await prisma.pesquisadores.update({
                     where: {
                         id: parseInt(req.params.id)
@@ -148,9 +148,20 @@ route.patch("/:id", async (req, res) =>{
                     }
                 })
                 res.json({ "status": "2", "message": `Pesquisador ${pesquisador.nome} designado à Presidente.` })
+            }else if (req.params.id != "1" & req.body.value == "ativar"){
+                let pesquisador = await prisma.pesquisadores.update({
+                    where: {
+                        id: parseInt(req.params.id)
+                    },
+                    data:{
+                        "status":"pesquisador"
+                    }
+                })
+                res.json({"status":"2", "message": `Perfil do pesquisador ${pesquisador.nome} ativado`})
             }
+        //ativar conta de pesquisador
         }else{
-            res.json({ "message":"acesso negado"})
+            res.json({ "message":"Patch Acesso negado","status":"0"})
         }
         
     }catch(e){
