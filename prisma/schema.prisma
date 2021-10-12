@@ -19,3 +19,32 @@ model adm {
   role     String   @db.VarChar(255)
   status   String   @db.VarChar(255)
 }
+
+model pesquisadores{
+  id         Int      @id @default(autoincrement())
+  email      String   @unique @db.VarChar(255)
+  senha      String   @db.VarChar(255)
+  nome       String   @db.VarChar(255)
+  cpf        String   @unique @db.VarChar(255)
+  telefone   String   @db.VarChar(255)
+  endereco   String   @db.VarChar(255)
+  role       String   @db.VarChar(255) //pesquisador/secretaria/admin (token de login)
+  status     String   @db.VarChar(255) //status de cadastro (aprovado, pesquisador, presidente)
+  sexo       String   @db.VarChar(255)
+  nascimento DateTime @db.DateTime(0)
+  area       String   @db.VarChar(255)//area de pesquisa
+//posteriormente adicionar os documentos na relação como: documentos documentos[]
+}
+
+model secretarias{
+  id       Int      @id @default(autoincrement())
+  email    String   @unique @db.VarChar(255)
+  senha    String   @db.VarChar(255)
+  nome     String   @db.VarChar(255)
+  cpf      String   @unique @db.VarChar(255)
+  telefone String   @db.VarChar(255)
+  endereco String   @db.VarChar(255)
+  role     String   @db.VarChar(255) //secretaria
+}
+
+//tabela de pendencias que devam conter cadastros e solicitações 
