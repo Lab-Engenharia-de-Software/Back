@@ -42,7 +42,7 @@ route.post('/Cadastro', async (req, res) => {
                     nascimento: req.body.nascimento,
                     area: req.body.area,
                     status: "invalido",
-                    role: "pesquisador"
+                    role: "invalido"
     
                 }
             })
@@ -64,7 +64,7 @@ route.post('/Cadastro', async (req, res) => {
     
 })
 //pegar informações de um pesquisador
-route.get("/:id", async (req, res) => {
+route.get("/user/:id", async (req, res) => {
     try{
         let pesquisador = await prisma.pesquisadores.findFirst({ 
             where: {
@@ -108,7 +108,7 @@ route.get("/:id", async (req, res) => {
         else{
             res.json({"message":"Usuário ou acesso inválido",
                       "status":"0",
-                    "id":req.params.id})
+                      "id":req.params.id})
         }
     }catch(e){
         console.log(e)
@@ -116,6 +116,56 @@ route.get("/:id", async (req, res) => {
         res.json({"message":"internal error","status":"1"})
     }
 })
+//lista de pesquisadores com perfis válidos
+route.get("/Lista", async (req,res) =>{
+    try{
+        let pesquisadores = await prisma.pesquisadores.findMany({
+            where:{
+                role:"pesquisador",
+            },
+            select:{
+                id: true,
+                status: true,
+                role: true,
+                nome: true,
+                cpf: true,
+                email: true,
+                telefone: true,
+                area: true,
+                sexo:true
+            }
+        })
+        let presidentes = await prisma.pesquisadores.findMany({
+            where:{
+                role:"presidente"
+            },
+            select:{
+                id: true,
+                status: true,
+                role: true,
+                nome: true,
+                cpf: true,
+                email: true,
+                telefone: true,
+                area: true,
+                sexo:true
+            }
+        })
+
+        res.json(
+            {
+            "pesquisadores":pesquisadores,
+            "presidentes":  presidentes
+        })
+        console.log(pesquisadores)
+
+    }catch(e){
+        console.log(e)
+        console.log("deu ruim em get pesq list", req.body)
+        res.json({"message":"internal error","status":"1"})        
+    }
+})
+
 
 //route para alterar informações de pesquisador, por enquanto apenas o cargo e ativar a conta
 route.patch("/:id", async (req, res) =>{
@@ -154,12 +204,12 @@ route.patch("/:id", async (req, res) =>{
                         id: parseInt(req.params.id)
                     },
                     data:{
+                        "role":"pesquisador",
                         "status":"pesquisador"
                     }
                 })
                 res.json({"status":"2", "message": `Perfil do pesquisador ${pesquisador.nome} ativado`})
             }
-        //ativar conta de pesquisador
         }else{
             res.json({ "message":"Patch Acesso negado","status":"0"})
         }
