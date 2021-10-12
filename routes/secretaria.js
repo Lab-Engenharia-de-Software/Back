@@ -40,7 +40,7 @@ route.post('/Cadastro', async (req, res) => {
                     role: "secretaria"
                 }
             })
-            res.json({"message": `Cadatrado a secretaria ${secretaria.nome}, com id ${secretaria.id}`,
+            res.json({"message": `Cadastrado a secretaria ${secretaria.nome}, com id ${secretaria.id}`,
                       "status": "2"})
             
         }else{
@@ -58,7 +58,7 @@ route.post('/Cadastro', async (req, res) => {
 })
 
 //dados de secretaria
-route.get("/:id", async (req, res) =>{
+route.get("/user/:id", async (req, res) =>{
     try{
         let secretaria = await prisma.secretarias.findFirst({
             where: {
@@ -85,5 +85,34 @@ route.get("/:id", async (req, res) =>{
         res.json({"message":"internal error","status":"1"})
     }
 })
+
+route.get("/Lista", async (req,res) =>{
+    try{
+        let secretarias = await prisma.secretarias.findMany({
+            where:{
+                role:"secretaria",
+            },
+            select:{
+                id: true,
+                role: true,
+                nome: true,
+                cpf: true,
+                email: true,
+                telefone: true,
+            }
+        })
+
+        res.json(
+            {
+            "secretarias":secretarias,
+        })
+
+    }catch(e){
+        console.log(e)
+        console.log("deu ruim em get secretaria list", req.body)
+        res.json({"message":"internal error","status":"1"})        
+    }
+})
+
 
 module.exports = route
