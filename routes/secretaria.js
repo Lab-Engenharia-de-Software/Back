@@ -73,7 +73,7 @@ route.get("/user/:id", async (req, res) =>{
                 cpf: req.body.cpf,
                 telefone: req.body.telefone,
                 endereco: req.body.endereco,
-                role: "secretaria"})
+                cargo: "secretaria"})
 
         }else{
             res.json({"message":"Usuário inválido","status":"0"})

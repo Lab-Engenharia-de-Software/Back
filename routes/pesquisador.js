@@ -65,8 +65,7 @@ route.post('/Cadastro', async (req, res) => {
 })
 //pegar informações de um pesquisador
 route.get("/user/:id", async (req, res) => {
-    console.log(req.params.id + " requested page")
-    console.log(req.headers.authorization)
+    console.log(req.params.id + " requested page from " + req.headers.authorization)
     try{
         let pesquisador = await prisma.pesquisadores.findFirst({ 
             where: {
@@ -79,7 +78,7 @@ route.get("/user/:id", async (req, res) => {
         //sem login nao vê usuario e pesquisadores não veem perfil nao cadastrado
         if(pesquisador.id != "1"  & pesquisador.status != "invalido" & req.headers.authorization != undefined){ 
             res.json({
-                "cargo": pesquisador.cargo,
+                "cargo": pesquisador.role,
                 "status": pesquisador.status,
                 "nome":pesquisador.nome,
                 "cpf": pesquisador.cpf,
@@ -88,14 +87,13 @@ route.get("/user/:id", async (req, res) => {
                 "endereco":pesquisador.endereco,
                 "sexo": pesquisador.sexo,
                 "area": pesquisador.area,
-                "message":"success"
             })
         
         //apenas adm e secretaria/admin tem acesso a perfis sem cadastro
         }else if(pesquisador.id != "1"  & pesquisador.status == "invalido" 
         & req.headers.authorization != "pesquisador"& req.headers.authorization != "presidente" & req.headers.authorization != undefined){
             res.json({
-                "cargo": pesquisador.cargo,
+                "cargo": pesquisador.role,
                 "status": pesquisador.status,
                 "nome":pesquisador.nome,
                 "cpf": pesquisador.cpf,
@@ -104,7 +102,6 @@ route.get("/user/:id", async (req, res) => {
                 "endereco":pesquisador.endereco,
                 "sexo": pesquisador.sexo,
                 "area": pesquisador.area,
-                "message":"success"
             })
         }
         else{
@@ -196,7 +193,7 @@ route.patch("/:id", async (req, res) =>{
                         id: parseInt(req.params.id)
                     },
                     data: {
-                        "cargo": req.body.value
+                        "role": req.body.value
                     }
                 })
                 res.json({ "status": "2", "message": `Pesquisador ${pesquisador.nome} designado à Presidente.` })
