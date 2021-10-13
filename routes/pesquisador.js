@@ -167,38 +167,41 @@ route.get("/Lista", async (req,res) =>{
 
 
 //route para alterar informações de pesquisador, por enquanto apenas o cargo e ativar a conta
-route.patch("/user/:id", async (req, res) =>{
+route.patch("/:id", async (req, res) =>{
     try {
+        console.log(req.body)
+        console.log(req.headers.sim)
         //atualizar status de pesquisador para parecerista ou inverso
         if (req.headers.authorization == "secretaria" || req.headers.authorization == "admin") {
-            if (req.params.id != "1" & req.body.value == "parecerista" || req.body.value == "pesquisador") {
+            if (req.params.id != "1" & req.headers.value == "parecerista" || req.headers.value == "pesquisador") {
                 let pesquisador = await prisma.pesquisadores.update({
                     where: {
                         id: parseInt(req.params.id)
                     },
                     data: {
-                        "status": req.body.value
+                        "status": req.headers.value
                     }
                 })
-                res.json({ "status": "2", "message": `Pesquisador ${pesquisador.nome} designado à ${req.body.value}.` })
+                res.json({ "status": "2", "message": `Pesquisador ${pesquisador.nome} designado à ${req.headers.value}.` })
             
             //por enquanto recusar alteração de secretaria para este cargo
-            }else if(req.headers.authorization == "secretaria" & req.body.value == "presidente"){
+            }else if(req.headers.authorization == "secretaria" & req.headers.value == "presidente"){
                 res.json({ "message":"Ação inválida, necessário acesso administrativo"})
             
             //atualizar cargo de pesquisador para presidente (apenas adm)
-            }else if (req.params.id != "1" & req.body.value == "presidente") {
+            }else if (req.params.id != "1" & req.headers.value == "presidente") {
                 let pesquisador = await prisma.pesquisadores.update({
                     where: {
                         id: parseInt(req.params.id)
                     },
                     data: {
-                        "role": req.body.value
+                        "role": req.headers.value
                     }
                 })
                 res.json({ "status": "2", "message": `Pesquisador ${pesquisador.nome} designado à Presidente.` })
 
-            }else if (req.params.id != "1" & req.body.value == "ativar"){
+            }else if (req.params.id != "1" & req.headers.value == "ativar"){
+                console.log("patch em ativação do pesquisador")
                 let pesquisador = await prisma.pesquisadores.update({
                     where: {
                         id: parseInt(req.params.id)
