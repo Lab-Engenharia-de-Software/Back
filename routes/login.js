@@ -6,7 +6,7 @@ var route = express.Router()
 
 route.post('/', async (req, res) => {
     try{
-        console.log("request",req.body)
+        console.log("login",req.body)
         //caso seja adm
         let accessADM = await prisma.adm.findFirst({
             where: {
