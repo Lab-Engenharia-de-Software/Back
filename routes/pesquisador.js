@@ -167,7 +167,7 @@ route.get("/Lista", async (req,res) =>{
 
 
 //route para alterar informações de pesquisador, por enquanto apenas o cargo e ativar a conta
-route.patch("/:id", async (req, res) =>{
+route.patch("/user/:id", async (req, res) =>{
     try {
         //atualizar status de pesquisador para parecerista ou inverso
         if (req.headers.authorization == "secretaria" || req.headers.authorization == "admin") {
@@ -197,6 +197,7 @@ route.patch("/:id", async (req, res) =>{
                     }
                 })
                 res.json({ "status": "2", "message": `Pesquisador ${pesquisador.nome} designado à Presidente.` })
+
             }else if (req.params.id != "1" & req.body.value == "ativar"){
                 let pesquisador = await prisma.pesquisadores.update({
                     where: {
