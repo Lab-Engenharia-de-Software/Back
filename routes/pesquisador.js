@@ -150,7 +150,6 @@ route.get("/Lista", async (req,res) =>{
                 sexo:true
             }
         })
-
         res.json(
             {
             "pesquisadores":pesquisadores,
@@ -179,6 +178,7 @@ route.patch("/:id", async (req, res) =>{
                         id: parseInt(req.params.id)
                     },
                     data: {
+                        "role":"pesquisador",
                         "status": req.headers.value
                     }
                 })
@@ -224,4 +224,15 @@ route.patch("/:id", async (req, res) =>{
     }
 
 })
+
+route.delete("/:id", async (req, res) =>{
+    let pesquisador = await prisma.pesquisadores.delete({
+        where: {
+            id:parseInt(req.params.id)
+        }
+    })
+    console.log(pesquisador.id)
+    res.json({"message":`Pesquisador cancelado`})
+
+}) 
 module.exports = route

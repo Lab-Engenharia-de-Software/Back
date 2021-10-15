@@ -116,6 +116,7 @@ route.get("/Lista", async (req,res) =>{
 //atividades de secretaria (por enquanto, em seguida adicionar avaliação de protocolo )
 route.get("/Atividades", async (req,res) =>{
     try{
+        console.log("request atividades")
         let perfis = await prisma.pesquisadores.findMany({
             where:{
                 role:"invalido",
