@@ -47,4 +47,8 @@ model secretarias{
   role     String   @db.VarChar(255) //secretaria
 }
 
+model bioterios {
+  id Int @id @unique @default(autoincrement())
+}
+
 //tabela de pendencias que devam conter cadastros e solicitações 
