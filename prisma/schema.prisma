@@ -48,7 +48,18 @@ model secretarias{
 }
 
 model bioterios {
-  id Int @id @unique @default(autoincrement())
+  id Int @id @default(autoincrement())
+  nome String @db.VarChar(255)
+  especies especies[]
+
+}
+
+model especies {
+  id Int @id @default(autoincrement())
+  nome String @db.VarChar(255)
+  quantidade Int 
+  bioterio bioterios @relation(fields: [bioterioId], references: [id])
+  bioterioId Int
 }
 
 //tabela de pendencias que devam conter cadastros e solicitações 
