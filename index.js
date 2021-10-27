@@ -8,6 +8,7 @@ var administrador = require('./routes/administrador'); //var para uso do endpoin
 var pesquisador = require('./routes/pesquisador')
 var secretaria = require('./routes/secretaria')
 var login = require('./routes/login');
+var bioterio = require('./routes/bioterio');
 const port = process.env.PORT || 3333;
 
 app.use(express.json()); //create server
@@ -18,6 +19,7 @@ app.use('/administrador',administrador);
 app.use('/login', login);
 app.use('/Pesquisador', pesquisador)
 app.use('/Secretaria', secretaria);
+app.use('/Bioterio', bioterio)
 
 app.get('/home', async (req, res) => {
   res.json({"message":"test da home com heroku "})
