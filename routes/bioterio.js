@@ -9,6 +9,8 @@ route.post('/Cadastro', async (req, res) => {
         let bioterio = await prisma.bioterios.create({
             data: {
                 nome: req.body.nome,
+                status: req.body.status,
+                qntEspecies: 0
             },
         })
         res.json({"message":"biotério cadastrado",
@@ -33,11 +35,27 @@ route.post('/Especie/:bioterio_id', async (req, res) => {
                 quantidade: parseInt(req.body.quantidade)
             }
         })
+
+        //atualizar qnt de especies no bioterio
+        let qntEspecies = await prisma.bioterios.findFirst({
+            where: {
+                id: parseInt(req.params.bioterio_id)
+            },
+            select:{
+                qntEspecies: true,
+            }
+        })
+        let bioterio = await prisma.bioterios.update({
+            where: {
+                id: parseInt(req.params.bioterio_id)
+            },
+            data: {
+                "qntEspecies": qntEspecies.qntEspecies + 1
+            }
+        })
         res.json({"message":"especie cadastrada",
                 "status":"success"})
-        
         }
-
     catch(e){
         console.log(e)
         console.log("body recebido:" + req.body)
