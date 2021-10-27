@@ -63,13 +63,40 @@ route.get('/:bioterio_id', async (req, res) => {
             }
         })
 
-        
-        if (bioterio.id == "1"){
+        if(bioterio == null){
+            bioterio = {id:"1"}
+        }
+        if (bioterio.id != "1"){
             res.json({
+                "status": "success",
                 "nome": bioterio.nome,
                  "especies" : especies})
         }
         
+        }
+
+    catch(e){
+        console.log(e)
+    } finally{
+        res.json({"message":"Ocorreu um erro em get de bioterio",
+                "bioterio": req.params.bioterio_id, 
+                "status":"0"})
+    }
+
+})
+
+route.get('/Lista', async (req, res) => {
+    try {
+        
+        let bioterios = await prisma.bioterios.findMany({
+            where:{
+                status:"active",
+        }
+    })
+            res.json({
+                "status": "success",
+                bioterios})
+         
         }
 
     catch(e){
