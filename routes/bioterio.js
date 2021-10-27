@@ -66,6 +66,23 @@ route.post('/Especie/:bioterio_id', async (req, res) => {
     }
 
     });
+    
+    route.get('/Lista', async (req, res) => {
+        try {
+            let bioterios = await prisma.bioterios.findMany()
+            res.json({
+                "status": "success",
+                "bioterios":bioterios
+            })
+    
+        }
+        catch(e){
+            console.log(e)
+        } finally{
+            res.json({"message":"Ocorreu um erro em get de bioterio", 
+                    "status":"0"})
+        }
+    })
 
 route.get('/:bioterio_id', async (req, res) => {
     try {
@@ -103,28 +120,4 @@ route.get('/:bioterio_id', async (req, res) => {
 
 })
 
-route.get('/Lista', async (req, res) => {
-    try {
-        
-        let bioterios = await prisma.bioterios.findMany({
-            where:{
-                status:"active",
-        }
-    })
-            res.json({
-                "status": "success",
-                bioterios})
-         
-        }
-
-    catch(e){
-        console.log(e)
-    } finally{
-        res.json({"message":"Ocorreu um erro em get de bioterio",
-                "bioterio": req.params.bioterio_id, 
-                "status":"0"})
-    }
-
-})
-  
 module.exports = route
