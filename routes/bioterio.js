@@ -32,7 +32,7 @@ route.post('/Especie/:bioterio_id', async (req, res) => {
             data:{
                 bioterio:{connect: {id: parseInt(req.params.bioterio_id)}},
                 nome: req.body.nome,
-                quantidade: parseInt(req.body.quantidade)
+                quantidade: "x"
             }
         })
 
@@ -95,7 +95,7 @@ route.get('/:bioterio_id', async (req, res) => {
         let especies = await prisma.especies.findMany({ 
             where: {
                 bioterioId: parseInt(req.params.bioterio_id)
-            }
+            },
         })
 
         if(bioterio == null){
