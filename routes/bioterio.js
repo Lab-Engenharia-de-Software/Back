@@ -145,7 +145,46 @@ route.delete('/:bioterio_id', async (req, res) => {
                 "bioterio": req.params.bioterio_id, 
                 "status":"0"})
     }
+})
 
+//deletar especies
+route.delete('/Especie/:bioterio_id/:especie_id', async (req, res) => {
+    try {
+        let especie_bioterio = await prisma.especies.delete({
+            where: {
+                id: parseInt(req.params.especie_id),
+              },
+        })
+        let qntEspecies = await prisma.bioterios.findFirst({
+            where: {
+                id: parseInt(req.params.bioterio_id)
+            },
+            select:{
+                qntEspecies: true,
+            }
+        })
+        if (qntEspecies != 0){
+            let bioterio = await prisma.bioterios.update({
+                where: {
+                    id: parseInt(req.params.bioterio_id)
+                },
+                data: {
+                    "qntEspecies": qntEspecies.qntEspecies - 1
+                }
+            })
+    
+            res.json({"message":`especie deletada do bioterio ${req.params.bioterio_id}`,
+                        "status":"1" })
+        }
+       
+
+    }catch(e){
+        console.log(e)
+    } finally{
+        res.json({"message":"Ocorreu um erro em delet de bioterio",
+                "bioterio": req.params.bioterio_id, 
+                "status":"0"})
+    }
 })
 
 module.exports = route
