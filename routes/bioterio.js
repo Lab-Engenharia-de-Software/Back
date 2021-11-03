@@ -32,7 +32,7 @@ route.post('/Especie/:bioterio_id', async (req, res) => {
             data:{
                 bioterio:{connect: {id: parseInt(req.params.bioterio_id)}},
                 nome: req.body.nome,
-                quantidade: "x"
+                quantidade: 1
             }
         })
 
@@ -114,6 +114,34 @@ route.get('/:bioterio_id', async (req, res) => {
         console.log(e)
     } finally{
         res.json({"message":"Ocorreu um erro em get de bioterio",
+                "bioterio": req.params.bioterio_id, 
+                "status":"0"})
+    }
+
+})
+
+//deletar bioterio
+route.delete('/:bioterio_id', async (req, res) => {
+    try {
+        let especie_bioterio = await prisma.especies.deleteMany({
+            where: {
+                bioterioId: parseInt(req.params.bioterio_id)
+              },
+        })
+
+        let bioterio = await prisma.bioterios.delete({
+            where: {
+                id: parseInt(req.params.bioterio_id)
+              },
+        })
+        res.json({"message":"bioterio deletado",
+                    "status":"1" })
+
+    
+    }catch(e){
+        console.log(e)
+    } finally{
+        res.json({"message":"Ocorreu um erro em delet de bioterio",
                 "bioterio": req.params.bioterio_id, 
                 "status":"0"})
     }
