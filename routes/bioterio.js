@@ -9,7 +9,7 @@ route.post('/Cadastro', async (req, res) => {
         let bioterio = await prisma.bioterios.create({
             data: {
                 nome: req.body.nome,
-                status: req.body.status,
+                status: "1",
                 qntEspecies: 0
             },
         })
