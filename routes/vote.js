@@ -3,16 +3,23 @@ var express = require('express')
 const prisma = require('../utils/prismaDB')
 var route = express.Router()
 
-
 //abrir votação para presidentes
 route.post('/Abrir/Presidente', async (req, res) => {
     console.log("votação aberta")
     try{
+        let lastPesquisador = await prisma.pesquisadores.findMany({
+            where: {
+                role:'pesquisador'
+            }
+        })
+
         let qntPesquisadores = await prisma.pesquisadores.count({
             where: {
                 role:'pesquisador'
               },
         })
+        
+        console.log(lastPesquisador)
         let par_eleitores
         if (qntPesquisadores % 2 == 0){
             par_eleitores = true
@@ -29,7 +36,7 @@ route.post('/Abrir/Presidente', async (req, res) => {
                 qntVotoSim: par_eleitores ? 1 : 0, //caso seja par, ele terá um voto a mais do adm para evitar empate.
                 qntVotoNao: 0,
                 minVotosAfavor: Math.floor(parseInt(qntPesquisadores)/2) + 1,
-                minVotosContra: Math.floor(parseInt(qntPesquisadores)/2) + 1,
+                lastId: lastPesquisador[lastPesquisador.length - 1].id
             }
         })
         res.json({"message":`eleições abertas para ${req.body.id}`,"status":"1"})
