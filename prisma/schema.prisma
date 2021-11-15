@@ -33,6 +33,9 @@ model pesquisadores{
   sexo       String   @db.VarChar(255)
   nascimento DateTime @db.DateTime(0)
   area       String   @db.VarChar(255)//area de pesquisa
+
+  candidato urnas? //relação 1-1 caso seja candidato
+  votos votos[]
 //posteriormente adicionar os documentos na relação como: documentos documentos[]
 }
 
@@ -62,5 +65,34 @@ model especies {
   bioterio bioterios @relation(fields: [bioterioId], references: [id])
   bioterioId Int
 }
+
+//relação n-1
+model urnas {
+  id Int @id @default(autoincrement())
+  tipo String @db.VarChar(255) //presidente ou documento
+  status String @db.VarChar(255) //aberto ou fechado
+  candidato pesquisadores @relation(fields: [candidatoId], references: [id])
+  candidatoId Int //id do candidato nesta urna
+  //documento documentos 
+
+  qntVotoSim Int //quantidade de votos afavor
+  qntVotoNao Int //quantidade de votos contra
+  minVotosAfavor Int //quantidade minima de votos para encerrar a votação
+  minVotosContra Int 
+  
+  votos votos[]
+}
+
+model votos { //para controlar se ja foi votado 
+  id Int @id @default(autoincrement())
+  voto Int //0 = nao, 1 == sim
+  eleitor pesquisadores @relation(fields: [eleitorId], references: [id])
+  urna urnas @relation(fields: [urnaId], references: [id])
+  urnaId Int
+  eleitorId Int
+}
+
+
+
 
 //tabela de pendencias que devam conter cadastros e solicitações 
