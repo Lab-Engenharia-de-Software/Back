@@ -77,8 +77,8 @@ model urnas {
 
   qntVotoSim Int //quantidade de votos afavor
   qntVotoNao Int //quantidade de votos contra
-  minVotosAfavor Int //quantidade minima de votos para encerrar a votação
-  minVotosContra Int 
+  minVotos Int //quantidade minima de votos para encerrar a votação
+  lastId Int //restringir novos cadastro de entrar na votação
   
   votos votos[]
 }
