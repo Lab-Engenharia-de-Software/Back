@@ -46,7 +46,7 @@ route.post('/Cadastro', async (req, res) => {
     
                 }
             })
-            res.json({"message": `Cadatrado o pesquisador ${pesquisador.nome}, com id ${pesquisador.id}`,
+            res.json({"message": `Cadastrado o pesquisador ${pesquisador.nome}, com id ${pesquisador.id}`,
                       "status": "2"})
 
         }else{
@@ -134,6 +134,7 @@ route.get("/Lista", async (req,res) =>{
                 sexo:true
             }
         })
+
         let presidentes = await prisma.pesquisadores.findMany({
             where:{
                 role:"presidente"
@@ -150,6 +151,9 @@ route.get("/Lista", async (req,res) =>{
                 sexo:true
             }
         })
+        if (presidentes.length != 0){
+            pesquisadores.unshift(presidentes[0])
+        }
         res.json(
             {
             "pesquisadores":pesquisadores,
@@ -190,6 +194,16 @@ route.patch("/:id", async (req, res) =>{
             
             //atualizar cargo de pesquisador para presidente (apenas adm)
             }else if (req.params.id != "1" & req.headers.value == "presidente") {
+
+                //caso so possa ter 1 presidente
+                let exPresidente = await prisma.pesquisadores.update({
+                    where: {
+                        role:'presidente'
+                    },
+                    data: {
+                        "role": 'pesquisador'
+                    }
+                })
                 let pesquisador = await prisma.pesquisadores.update({
                     where: {
                         id: parseInt(req.params.id)
@@ -198,6 +212,7 @@ route.patch("/:id", async (req, res) =>{
                         "role": req.headers.value
                     }
                 })
+                
                 res.json({ "status": "2", "message": `Pesquisador ${pesquisador.nome} designado à Presidente.` })
 
             }else if (req.params.id != "1" & req.headers.value == "ativar"){
