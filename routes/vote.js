@@ -8,19 +8,21 @@ async function atualizarVotação(urna_id,user_id){
     try{
         let urna = await prisma.urnas.findFirst({
             where:{
-                id: urna_id,
+                id: parseInt(urna_id),
                 status: 'aberto'
             }
         })
         console.log(urna)
         let qntVotosSim = await prisma.votos.count({
             where:{
+                urnaId: parseInt(urna_id),
                 voto: 1
             }
         })
         console.log(qntVotosSim)
         let qntVotosNão= await prisma.votos.count({
             where:{
+                urnaId: parseInt(urna_id),
                 voto: 0
             }
         })
@@ -42,7 +44,7 @@ async function atualizarVotação(urna_id,user_id){
             //eleger o novo presidente
             let pesquisador = await prisma.pesquisadores.update({
                 where: {
-                    id: user_id,
+                    id: parseInt(user_id),
                 },
                 data:{
                     role: 'presidente'
@@ -55,7 +57,7 @@ async function atualizarVotação(urna_id,user_id){
         } else if (qntVotosNão == urna.minVotos){
             let closeUrna = await prisma.urnas.update({
                 where:{
-                    id: urna.id
+                    id: parseInt(urna.id)
                 },
                 data:{
                     status:'fechado'
@@ -93,6 +95,7 @@ route.post('/Abrir/Presidente', async (req, res) => {
         let par_eleitores
         if (qntPesquisadores % 2 == 0){
             par_eleitores = true
+            qntPesquisadores += 1
         } else{
             par_eleitores = false
         }
@@ -104,11 +107,24 @@ route.post('/Abrir/Presidente', async (req, res) => {
                 candidato :{connect: {id: parseInt(req.body.id)}},
                 //candidatoId: req.body.id,
                 qntVotoSim: par_eleitores ? 1 : 0, //caso seja par, ele terá um voto a mais do adm para evitar empate.
-                qntVotoNao: 0,
-                minVotosAfavor: Math.floor(parseInt(qntPesquisadores)/2) + 1,
+                qntVotoNao: qntPesquisadores, //max votos
+                minVotos: Math.floor(parseInt(qntPesquisadores)/2) + 1,
                 lastId: lastPesquisador[lastPesquisador.length - 1].id
             }
         })
+        
+        if (par_eleitores){
+            let lastUrna = await prisma.urnas.findMany({})
+            console.log(lastUrna.length)
+            let XD = await prisma.votos.create({
+                data:{
+                voto: 1,
+                eleitor: {connect:{id: 1}},
+                urna: {connect:{id: parseInt(lastUrna[lastUrna.length-1].id)}}
+                }
+                
+            })
+        } 
         res.json({"message":`eleições abertas para ${req.body.id}`,"status":"1"})
     }catch(e){
         console.log(e)
@@ -117,6 +133,77 @@ route.post('/Abrir/Presidente', async (req, res) => {
     }finally{
         res.json({"message":"Ocorreu um erro ao abrir votação",
                 "status":"0"})
+    }
+})
+
+//votar
+route.post('/Presidente', async (req, res)=>{
+    try{
+        let voto = await prisma.votos.create({
+            data:{
+                voto: parseInt(req.body.voto),
+                eleitor: {connect:{id: parseInt(req.body.eleitor)}},
+                urna: {connect:{id: parseInt(req.body.urna)}}
+            }
+        })
+        let a = await atualizarVotação( req.body.urna,req.body.eleitor)
+        if (a == '1'){
+            res.json({"status":"1", "message":"votação encerrada, presidente eleito!"})
+            
+        }else if(a == '0'){
+            res.json({"status":"1", "message":"votação encerrada, presidente recusado XD!"})
+        }else{
+            res.json({"message":`voto ${req.body.voto} computado para ${req.body.urna}`,"status":"1"})
+        }
+
+    }catch(e){
+        console.log(e)
+        console.log("erro ao computar voto body recebido:" + req.body)
+    }finally{
+        res.json({"message":"Ocorreu um erro ao votar",
+                "status":"0"})
+    }  
+})
+
+//lembra do last id
+//header.user id
+route.get('/Presidente', async(req, res) => {
+    try{
+        console.log(req.headers.value)
+        let urna = await prisma.urnas.findMany({
+            where:{
+                id: parseInt(req.headers.value),
+                status:"aberto"
+            }
+        })
+        urna[0].minVotos
+        //contagem de votos
+        let qntVotosSim = await prisma.votos.count({
+            where:{
+                urnaId: parseInt(urna[0].id),
+                voto: 1
+            }
+        })
+        console.log(qntVotosSim)
+        let qntVotosNão = await prisma.votos.count({
+            where:{
+                urnaId: parseInt(urna[0].id),
+                voto: 0
+            }
+        })
+        let qntVotos = await prisma.votos.count({
+            where:{
+                urnaId: parseInt(urna[0].id),
+            }
+        })
+        res.json({
+            "Votos":`${qntVotos} / ${(urna[0].qntVotoNao) }`,
+            "Afavor": `${qntVotosSim} / ${urna[0].minVotos }`,
+            "Contra": `${qntVotosNão} / ${urna[0].minVotos }`,
+        })
+    
+    }catch (e) {
+        console.log("erro em get votos", e)
     }
 })
 
