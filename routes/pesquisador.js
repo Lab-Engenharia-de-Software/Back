@@ -249,5 +249,45 @@ route.delete("/:id", async (req, res) =>{
     console.log(pesquisador.id)
     res.json({"message":`Pesquisador cancelado`})
 
-}) 
+})
+//ver id do pesquisador em votos da urna
+route.get("/Atividades", async (req, res) =>{
+    try{
+        //incompleto
+        console.log('get atividades pesq')
+        let listUrnas = [] //lista de urnas que ele nao votou
+        let urnas = await prisma.urnas.findMany({
+            where: {
+                status:'aberto'
+            }
+        }) 
+        
+        let votos = await prisma.votos.groupBy({
+            by: ['urnaId'],
+            where: {
+                eleitorId: parseInt(req.body.eleitor)
+                    
+            }
+        })
+
+        if(votos.length == 0){
+            res.json({
+                "urnas": urnas
+            })
+        } else{
+            res.json({
+                "urnas": listUrnas
+            })
+        }
+        console.log('group',votos)
+        console.log(listUrnas)
+        
+
+    }catch(e){
+        console.log(e)
+        console.log("deu ruim em get atividades pesq list", req.body)
+        res.json({"message":"internal error","status":"0"})   
+    }
+})
+
 module.exports = route
