@@ -159,7 +159,7 @@ route.get("/Lista", async (req,res) =>{
             "pesquisadores":pesquisadores,
             "presidentes":  presidentes
         })
-        console.log(pesquisadores)
+        //console.log(pesquisadores)
 
     }catch(e){
         console.log(e)
@@ -196,7 +196,7 @@ route.patch("/:id", async (req, res) =>{
             }else if (req.params.id != "1" & req.headers.value == "presidente") {
 
                 //caso so possa ter 1 presidente
-                let exPresidente = await prisma.pesquisadores.update({
+                let exPresidente = await prisma.pesquisadores.updateMany({
                     where: {
                         role:'presidente'
                     },
