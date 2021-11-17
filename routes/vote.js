@@ -200,6 +200,10 @@ route.get('/Presidente', async(req, res) => {
             "Votos":`${qntVotos} / ${(urna[0].qntVotoNao) }`,
             "Afavor": `${qntVotosSim} / ${urna[0].minVotos }`,
             "Contra": `${qntVotosNão} / ${urna[0].minVotos }`,
+            "qntVotos": `${qntVotos}`,
+            "qntAfavor": `${qntVotosSim}`,
+            "qntContra": `${qntVotosNão}`,
+            "minVotos": `${urna[0].minVotos}`
         })
     
     }catch (e) {
