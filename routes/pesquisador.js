@@ -254,7 +254,7 @@ route.delete("/:id", async (req, res) =>{
 route.get("/Atividades", async (req, res) =>{
     try{
         //incompleto
-        console.log('get atividades pesq')
+        console.log('get atividades pesq', req.headers.eleitor)
         let listUrnas = [] //lista de urnas que ele nao votou
         let urnas = await prisma.urnas.findMany({
             where: {
@@ -265,27 +265,28 @@ route.get("/Atividades", async (req, res) =>{
         let votos = await prisma.votos.groupBy({
             by: ['urnaId'],
             where: {
-                eleitorId: parseInt(req.body.eleitor)
+                eleitorId: parseInt(req.headers.eleitor)
                     
             }
         })
 
         if(votos.length == 0){
             res.json({
-                "urnas": urnas
+                "urnas": urnas[0]
             })
         } else{
             res.json({
-                "urnas": listUrnas
+                "urnas": listUrnas[0]
             })
         }
         console.log('group',votos)
+        console.log(urnas)
         console.log(listUrnas)
         
 
     }catch(e){
         console.log(e)
-        console.log("deu ruim em get atividades pesq list", req.body)
+        console.log("deu ruim em get atividades pesq list", req.headers)
         res.json({"message":"internal error","status":"0"})   
     }
 })
