@@ -138,6 +138,7 @@ route.post('/Abrir/Presidente', async (req, res) => {
 
 //votar
 route.post('/Presidente', async (req, res)=>{
+    console.log('voto', req.body)
     try{
         let voto = await prisma.votos.create({
             data:{
@@ -196,7 +197,13 @@ route.get('/Presidente', async(req, res) => {
                 urnaId: parseInt(urna[0].id),
             }
         })
+        let candidato = await prisma.pesquisadores.findFirst({
+            where: {
+                id: parseInt(urna[0].candidatoId)
+            }
+        })
         res.json({
+            "Candidato": `${candidato.nome}`,
             "Votos":`${qntVotos} / ${(urna[0].qntVotoNao) }`,
             "Afavor": `${qntVotosSim} / ${urna[0].minVotos }`,
             "Contra": `${qntVotosNão} / ${urna[0].minVotos }`,
