@@ -29,8 +29,7 @@ app.get('/home', async (req, res) => {
 })
 
 app.listen(port,() => {
-  console.log('porta 3333 on');
+  console.log('porta on',port);
 })
-console.log('XD');
 
 module.exports = app;
